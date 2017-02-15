@@ -1,0 +1,19 @@
+{
+  "name": "pg-bag",
+  "version": "1.0.0",
+  "description": "postgres nosql lite storage",
+  "main": "index.js",
+  "repository": "git://github.com/brianc/node-pg-bag.git",
+  "author": "Brian M. Carlson",
+  "license": "MIT",
+  "dependencies": {
+    "node-uuid": "^1.4.7",
+    "pg": "^6.1.2",
+    "pg-pool": "^1.6.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "co": "^4.6.0",
+    "mocha": "^3.2.0"
+  }
+}
