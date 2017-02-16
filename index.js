@@ -13,6 +13,18 @@ class Table {
     const res = yield this._bag.pool.query(text, [id])
     return res.rows[0]
   }
+
+  * put(item) {
+    const text = `
+      INSERT INTO "${this.name}" (data) VALUES ($1)
+      RETURNING * 
+    `
+    const params = [item]
+    const res = yield this._bag.pool.query(text, params)
+    const { data } = res.rows[0]
+    data.id = res.rows[0].id
+    return data
+  }
 }
 
 class Bag {
