@@ -24,9 +24,14 @@ describe('pg-bag', () => {
     )
   })
 
+  beforeEach(() => pool.query('BEGIN'))
+  afterEach(() => pool.query('ROLLBACK'))
+
   after(() => {
     return pool.end()
   })
+
+  const count = (table = 'users') => pool.query(`SELECT COUNT(*) FROM ${table}`).then(res => res.rows[0].count)
 
   it('makes a bag', co.wrap(function * () {
     const user = yield bag.users.get(uuid())
@@ -39,5 +44,13 @@ describe('pg-bag', () => {
     });
     expect(user.id).to.be.a('string')
     expect(user.name).to.eql('brian')
+    expect(yield count()).to.equal('1')
+  }))
+
+  it('can delete from bag', co.wrap(function * () {
+    const user = yield bag.users.put({ name: 'brian' });
+    expect(yield count()).to.equal('1')
+    bag.users.delete(user.id)
+    expect(yield count()).to.equal('0')
   }))
 })

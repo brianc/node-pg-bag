@@ -17,13 +17,21 @@ class Table {
   * put(item) {
     const text = `
       INSERT INTO "${this.name}" (data) VALUES ($1)
-      RETURNING * 
+      RETURNING *
     `
     const params = [item]
     const res = yield this._bag.pool.query(text, params)
     const { data } = res.rows[0]
     data.id = res.rows[0].id
     return data
+  }
+
+  delete(item) {
+    const text = `
+      DELETE FROM "${this.name}" WHERE id = $1
+    `
+    const params = [typeof item == 'string' ? item : item.id]
+    this._bag.pool.query(text, params)
   }
 }
 
