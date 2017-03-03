@@ -1,9 +1,11 @@
-const _ = require('lodash')
-
-const insert = function * (name, data) {
-}
-
-const upsert = function * (name, item) {
+const omit = (object, key) => {
+  const result = { }
+  for (var k in object) {
+    if (k !== key) {
+      result[k] = object[k]
+    }
+  }
+  return result
 }
 
 class Table {
@@ -51,7 +53,7 @@ class Table {
 
   * _upsert(item) {
     const { id } = item
-    const inData = _.omit(item, 'id')
+    const inData = omit(item, 'id')
     const params = [id, inData]
     const text = `
       INSERT INTO "${this.name}" as t (id, data) VALUES ($1, $2)
