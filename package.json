@@ -1,6 +1,6 @@
 {
   "name": "pg-bag",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "postgres nosql lite storage",
   "main": "index.js",
   "repository": "git://github.com/brianc/node-pg-bag.git",
