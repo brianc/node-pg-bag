@@ -33,11 +33,20 @@ describe('pg-bag', () => {
     expect(user).to.eql(undefined)
   }))
 
-  it('saves into bag', co.wrap(function * () {
+  it('CRUD', co.wrap(function * () {
     const user = yield bag.users.put({
       name: 'brian'
     });
     expect(user.id).to.be.a('string')
     expect(user.name).to.eql('brian')
+
+    user.name = 'foo'
+    const updated = yield bag.users.put(user)
+    expect(updated.id).to.eql(user.id)
+    expect(updated.name).to.eql('foo')
+
+    yield bag.users.delete(updated.id)
+    const { rows } = yield bag.pool.query('SELECT COUNT(*) FROM users')
+    expect(rows[0].count).to.eql('0')
   }))
 })
