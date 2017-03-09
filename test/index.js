@@ -9,27 +9,21 @@ const pool = new Pool({
 })
 
 const bag = new Bag(pool)
-
 bag.addTable('users')
 
 describe('pg-bag', () => {
-  before(() => {
-    return pool.query(
-      `
-      CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-      CREATE TEMP TABLE users(
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),
-        data JSON
-      )`
-    )
-  })
+  before(co.wrap(function* () {
+    yield bag.migrate(true)
+  }))
 
   after(() => {
     return pool.end()
   })
 
   it('makes a bag', co.wrap(function * () {
+    console.log('get user')
     const user = yield bag.users.get(uuid())
+    console.log('got user')
     expect(user).to.eql(undefined)
   }))
 

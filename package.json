@@ -7,6 +7,7 @@
   "author": "Brian M. Carlson",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^4.17.4",
     "node-uuid": "^1.4.7"
   },
   "devDependencies": {
