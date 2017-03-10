@@ -10,7 +10,9 @@ const omit = (object, key) => {
   return result
 }
 
-const log = console.log.bind(console)
+const log = (one, two, three, four) => {
+  console.log(one, two, three, four)
+}
 
 const smoosh = res => {
   return _.extend({}, res.rows[0].data, { id: res.rows[0].id })
@@ -23,6 +25,16 @@ class Table {
     this.columns = config.columns || {}
   }
 
+  * query(text, params) {
+    const client = yield this._bag.pool.connect()
+    try {
+      const res = yield client.query(text, params)
+      return res
+    } finally {
+      client.release()
+    }
+  }
+
   * get(id) {
     const text = `
       SELECT *
@@ -30,7 +42,7 @@ class Table {
       WHERE id = $1
     `
     log(text)
-    const res = yield this._bag.pool.query(text, [id])
+    const res = yield this.query(text, [id])
     const [row] = res.rows
     if (!row) {
       return undefined
@@ -50,7 +62,7 @@ class Table {
     const text = `DELETE FROM ${this.name} WHERE id = $1`
     const params = [id]
     log('bag.delete', text)
-    yield this._bag.pool.query(text, params)
+    yield this.query(text, params)
   }
 
   * _insert(data) {
@@ -67,7 +79,7 @@ class Table {
       return data[col]
     }))
     log('bag.insert', text, params)
-    const res = yield this._bag.pool.query(text, params)
+    const res = yield this.query(text, params)
     return smoosh(res)
   }
 
@@ -89,7 +101,7 @@ class Table {
       RETURNING *
     `
     log('bag.upsert', text, params)
-    const res = yield this._bag.pool.query(text, params)
+    const res = yield this.query(text, params)
     return smoosh(res)
   }
 
@@ -104,7 +116,7 @@ class Table {
       WHERE ${clauses.join(' AND ')}
     `
     log('bag.find', text)
-    const res = yield this._bag.pool.query(text, vals)
+    const res = yield this.query(text, vals)
     return smoosh(res)
   }
 }
