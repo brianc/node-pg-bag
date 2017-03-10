@@ -15,6 +15,9 @@ const log = (one, two, three, four) => {
 }
 
 const smoosh = res => {
+  if (!res.rows.length) {
+    return null
+  }
   return _.extend({}, res.rows[0].data, { id: res.rows[0].id })
 }
 
